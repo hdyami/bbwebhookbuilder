@@ -1,10 +1,13 @@
 #!/usr/bin/python
 import os
 import subprocess
+import git
 import sys
 import argparse
 import json
 from pprint import pprint
+
+
 
 # Ingest Bitbucket webhook json payload
 for line in sys.stdin:
@@ -13,12 +16,13 @@ for line in sys.stdin:
 
 	repo = bbdata['repository']
 
-cd_p = subprocess.Popen('cd', '/mnt/builds/'+str(repo['name']), stdout=PIPE, stderr=PIPE)
-print cd_p.communicate()
+# Local git directory
+git_dir = '/mnt/builds/'+repo['name']
 
-gitpull_p = subprocess.Popen('git', 'pull', stdout=PIPE, stderr=PIPE)
-print gitpull_p.communicate()
+# Initialize repo object and pull
+g = git.cmd.Git(git_dir)
+g.pull()
 
-# pprint(repo['name'], depth=3)
+pprint(repo, depth=3)
 
 print 0
