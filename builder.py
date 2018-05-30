@@ -15,19 +15,21 @@ parser.add_argument('-d', nargs='?', help="Destination host for the build")
 
 args = parser.parse_args()
 
-# if the stdin was piped
+# If the stdin was piped
 if type(args.sitename) is file:
-	print "yay"
+	# Ingest Bitbucket webhook json payload
+	for line in args.sitename:
+		bbdata = json.loads(line)
+		repo = bbdata['repository']
+else:
+	repo = {}
+	repo['name'] = args.sitename
 
-Ingest Bitbucket webhook json payload
-for line in args.sitename:
-	bbdata = json.loads(line)
-	repo = bbdata['repository']
 pprint(repo, depth=3)
 
 # Local git directory
 try:
-	git_dir = '/mnt/builds/'+args.sitename
+	git_dir = '/mnt/builds/'+repo['name']
 
 	# Initialize repo object and pull
 	g = git.cmd.Git(git_dir)
