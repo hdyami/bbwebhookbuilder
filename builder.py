@@ -20,25 +20,30 @@ if type(args.sitename) is file:
 	# Ingest Bitbucket webhook json payload
 	for line in args.sitename:
 		bbdata = json.loads(line)
-		repo = bbdata['repository']
-else:
-	repo = {}
-	repo['name'] = args.sitename
 
-pprint(repo, depth=3)
+		build = {}
+		build['name'] = bbdata['repository']['name']
+		build['destination'] = 'd7-1.dev.www.umass.edu'
+else: # If arguments were given by a human/external invocation
+	build = {}
+	build['name'] = args.sitename
+	build['destination'] = args.d
+
+# Debug
+pprint(build, depth=3)
 
 # Local git directory
 try:
-	git_dir = '/mnt/builds/'+repo['name']
+	git_dir = '/mnt/builds/'+build['name']
 
 	# Initialize repo object and pull
 	g = git.cmd.Git(git_dir)
 	print g.pull()
 
 	# Rsync to the dev server
-	rsync = subprocess.Popen(['rsync', '-a','-v','-h', git_dir, 'jenk@d7-1.dev.www.umass.edu:/home/jenk/builds/'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	rsync = subprocess.Popen(['rsync', '-a','-v','-h', git_dir, 'jenk@'+build['destination']+':/home/jenk/builds/'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-	pprint(rsync.communicate())
+	print rsync.communicate()
 
 	# debug
 	# pprint(repo, depth=3)
@@ -47,6 +52,6 @@ try:
 except NameError:
 	print "Please provide a sitename and destination with the -d flag - or pipe in some json."
 
-def destination():
-	pass
+# def sqldump():
+
 
