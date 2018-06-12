@@ -11,6 +11,8 @@ from pprint import pprint
 parser = argparse.ArgumentParser(description="Pipe in stdin or optionally invoke with a sitename and destination")
 parser.add_argument('sitename', nargs='?', default=sys.stdin, help='Name of the site to build')
 parser.add_argument('-d', nargs='?', help="Destination host for the build")
+# parser.add_argument('-S', nargs='?', help="Destination host for the build")
+
 
 args = parser.parse_args()
 
@@ -40,7 +42,7 @@ try:
 	print g.pull()
 
 	# Rsync to the dev server
-	rsync = subprocess.Popen(['rsync', '-a','-v','-h', git_dir, 'jenk@'+build['destination']+':/home/jenk/builds/'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	rsync = subprocess.Popen(['rsync', '-r','-l', '-v','-h', git_dir, 'jenk@'+build['destination']+':/var/www/'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 	print rsync.communicate()
 
@@ -51,13 +53,13 @@ try:
 except NameError:
 	print "Please provide a sitename and destination with the -d flag - or pipe in some json."
 
-pdef sqldump():
+def sqldump():
 	if os.path.isdir('/var/www/'+build['sitename']):
 
 		sshp = subproces.Popen(['ssh', 'jenk@'+build['destination']], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		dumper = subprocess.Popen(['ls', '-l', '-a', '-h', '/var/www/'+build['sitename']], stdin=sshp.stdout, stdout=subprocess.PIPE)
-u	else:
-		print '/var/www/'+build['sitename']': Does not exist'
+	else:
+		print '/var/www/'+build['sitename']+': Does not exist'
 
 
 
