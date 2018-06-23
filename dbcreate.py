@@ -3,6 +3,8 @@ import os
 import sys
 import subprocess
 import argparse
+import mysql.connector
+from mysql.connector import errorcode
 import json
 from pprint import pprint
 
@@ -14,18 +16,34 @@ parser.add_argument('-d', nargs='?', help="Destination cluster for the db - dev,
 
 args = parser.parse_args()
 
+config = {
+	'user': 'qsdbadmin',
+	'host': 'dev.umwebdb.umass.edu',
+	#'database': args.dbname,
+	'port': '3307',
+	#'raise_on_warnings': True,
+	'option_files': '/home/jenk/.my.cnf',
+}
+
+cnx = mysql.connector.connect(**config)
+cursor = cnx.cursor(buffered=False)
+
+def create_database(cursor):
+    try:
+        cursor.execute(
+            "CREATE DATABASE {} DEFAULT CHARACTER SET 'utf8'".format(args.dbname))
+    except mysql.connector.Error as err:
+        print("Failed creating database: {}".format(err))
+        exit(1)
+
+create_database(cursor)
+
+cnx.close()
+
 # http://python-for-system-administrators.readthedocs.io/en/latest/ssh.html
 # querywrapper = "mysql -uqsdbadmin --port=3307 -hdev.umwebdb.umass.edu -e 'create database "+args.dbname+";'"
-query = "GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, LOCK TABLES, CREATE TEMPORARY TABLES ON \"cryptozoo_drpl\".* TO "cryptozoo_drpl"@"d7-%.dev.www.umass.edu" IDENTIFIED BY "zYVfEkTgYawVKMum" WITH MAX_USER_CONNECTIONS 30"
 
-querywrapper = "mysql -uqsdbadmin --port=3307 -hdev.umwebdb.umass.edu -e '"+ query +"';"
-pprint(querywrapper)
 
-ssh = subprocess.Popen(["ssh", "%s" % args.d, querywrapper],
-                       shell=False,
-                       stdout=subprocess.PIPE,
-                       stderr=subprocess.PIPE)
+#ssh -L 2222:umwebdb...:3307 <user>@<host>
 
-result = ssh.stderr.readlines()
-
-print result
+#127.0.0.1 2222
