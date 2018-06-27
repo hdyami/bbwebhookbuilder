@@ -11,10 +11,14 @@ from pprint import pprint
 # setup our arguments
 parser = argparse.ArgumentParser(description="Provide a database name, target and password")
 parser.add_argument('dbname', nargs='?', default=sys.stdin, help='Name of the site to build')
-# parser.add_argument('-d', nargs='?', help="Destination cluster for the db - dev, prod, stag")
-# parser.add_argument('-p', nargs='?', help="Password")
+parser.add_argument('-d', nargs='?', help="Destination cluster for the db - dev, prod, stag")
+parser.add_argument('-p', nargs='?', help="Password")
 
 args = parser.parse_args()
+
+NAME = args.dbname
+HOST = args.d
+PASS = args.p
 
 config = {
 	'user': 'qsdbadmin',
@@ -35,10 +39,10 @@ def create_database(cursor):
 	#	exit(1)
 
 def enable_database_access(cursor):
-	query = ("GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, LOCK TABLES, CREATE TEMPORARY TABLES ON {}.* TO %s@%s IDENTIFIED BY %s WITH MAX_USER_CONNECTIONS 30".format('`cryptozoo_drpl`'))
+	query = ("GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, LOCK TABLES, CREATE TEMPORARY TABLES ON {}.* TO %s@%s IDENTIFIED BY %s WITH MAX_USER_CONNECTIONS 30".format('`'+ NAME +'`'))
 	try:
-		cursor.execute(query, ('cryptozoo_drpl', 'd7-%.dev.www.umass.edu', 'zYVfEkTgYawVKMum'))
-		print("Success granting permissions for {}".format(args.dbname))
+		cursor.execute(query, (NAME, HOST, PASS))
+		print("Success granting permissions for {}".format(NAME))
 	except mysql.connector.Error as err:
 		print("Failed querying: {}".format(err))
 		exit(1)
