@@ -11,19 +11,31 @@ from pprint import pprint
 # setup our arguments
 parser = argparse.ArgumentParser(description="Provide a database name, target and password")
 parser.add_argument('dbname', nargs='?', default=sys.stdin, help='Name of the site to build')
-parser.add_argument('-d', nargs='?', help="Destination cluster for the db - dev, prod, stag")
+parser.add_argument('-d', nargs='?', help="Destination cluster for the db - d7dev, d7prod, d7stag")
 parser.add_argument('-p', nargs='?', help="Password")
 
 args = parser.parse_args()
 
 NAME = args.dbname
-HOST = args.d
 PASS = args.p
+
+if args.d == 'd7-%.dev.www.umass.edu':
+	HOST = 'd7-%.dev.www.umass.edu'
+	CONFHOST = 'dev.umwebdb.umass.edu'
+	PORT = '3307'
+elif args.d == 'd7-%.stag.www.umass.edu':
+	HOST = 'd7-%.stag.www.umass.edu'
+	CONFHOST = 'stag.umwebdb.umass.edu'
+	PORT = '3307'
+elif args.d == 'd7-%.prod.www.umass.edu':
+	HOST = 'd7-%.prod.www.umass.edu'
+	CONFHOST = 'umwebdb.umass.edu'
+	PORT = '3308'
 
 config = {
 	'user': 'qsdbadmin',
-	'host': 'dev.umwebdb.umass.edu',
-	'port': '3307',
+	'host': HOST,
+	'port': PORT,
 	'option_files': '/home/jenk/.my.cnf',
 }
 
@@ -32,8 +44,8 @@ cursor = cnx.cursor(buffered=False)
 
 def create_database(cursor):
 	try:
-		cursor.execute("CREATE DATABASE {} DEFAULT CHARACTER SET 'utf8'".format(args.dbname))
-		print("Success creating database {}".format(args.dbname))
+		cursor.execute("CREATE DATABASE {} DEFAULT CHARACTER SET 'utf8'".format(NAME))
+		print("Success creating database {}".format(NAME))
 	except mysql.connector.Error as err:
 		print("Failed creating database: {}".format(err))
 	#	exit(1)
@@ -47,7 +59,17 @@ def enable_database_access(cursor):
 		print("Failed querying: {}".format(err))
 		exit(1)
 
+def flush_privileges(cursor):
+	try:
+		cursor.execute("flush privileges")
+		print("Success Flushing Privileges")
+	except mysql.connector.Error as err:
+		print("Failed flushing privileges")
+		exit(1)
+
 create_database(cursor)
 enable_database_access(cursor)
+flush_privileges(cursor)
 
 cnx.close()
+
