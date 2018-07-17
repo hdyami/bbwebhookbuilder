@@ -7,6 +7,8 @@ import mysql.connector
 from mysql.connector import errorcode
 import json
 from pprint import pprint
+from umwebpass import password
+
 
 # setup our arguments
 parser = argparse.ArgumentParser(description="Provide a database name, target and password")
@@ -34,9 +36,10 @@ elif args.d == 'd7-%.prod.www.umass.edu':
 
 config = {
 	'user': 'qsdbadmin',
-	'host': HOST,
+	'host': CONFHOST,
 	'port': PORT,
-	'option_files': '/home/jenk/.my.cnf',
+	'password': password('qsdbadmin')
+	# 'option_files': '/home/jenk/.my.cnf',
 }
 
 cnx = mysql.connector.connect(**config)
@@ -48,7 +51,7 @@ def create_database(cursor):
 		print("Success creating database {}".format(NAME))
 	except mysql.connector.Error as err:
 		print("Failed creating database: {}".format(err))
-	#	exit(1)
+		exit(1)
 
 def enable_database_access(cursor):
 	query = ("GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, LOCK TABLES, CREATE TEMPORARY TABLES ON {}.* TO %s@%s IDENTIFIED BY %s WITH MAX_USER_CONNECTIONS 30".format('`'+ NAME +'`'))
