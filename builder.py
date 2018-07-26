@@ -53,13 +53,6 @@ try:
 except NameError:
 	print "Please provide a sitename and destination with the -d flag - or pipe in some json."
 
-def sqldump():
-	if os.path.isdir('/var/www/'+build['sitename']):
-
-		sshp = subproces.Popen(['ssh', 'jenk@'+build['destination']], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-		dumper = subprocess.Popen(['ls', '-l', '-a', '-h', '/var/www/'+build['sitename']], stdin=sshp.stdout, stdout=subprocess.PIPE)
-	else:
-		print '/var/www/'+build['sitename']+': Does not exist'
 
 
 
