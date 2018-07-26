@@ -27,7 +27,7 @@ elif HOST == 'd7-1.stag.www.umass.edu':
 elif HOST == 'd7-1.prod.www.umass.edu':
 	SUFFIX = '-prod'
 
-drush = subprocess.Popen(["ssh", "jenk@"+HOST, "drush", "@"+NAME+SUFFIX, "sql-dump > /var/www/"+NAME+"/"+NAME+"_drpl.sql"], shell=False, stdout=subprocess.PIPE)
+drush = subprocess.Popen(["ssh", "jenk@"+HOST, "drush", "@"+NAME+SUFFIX, "sql-dump > /var/www/"+NAME+"/"+NAME+"-drpl.sql"], shell=False, stdout=subprocess.PIPE)
 drushresponse = drush.communicate()
 
 params = drushresponse[0]

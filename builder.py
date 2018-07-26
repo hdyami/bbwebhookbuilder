@@ -52,9 +52,3 @@ try:
 
 except NameError:
 	print "Please provide a sitename and destination with the -d flag - or pipe in some json."
-
-
-
-
-
-
