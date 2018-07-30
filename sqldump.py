@@ -4,8 +4,6 @@ import sys
 import re
 import subprocess
 import argparse
-import mysql.connector
-from mysql.connector import errorcode
 import json
 from pprint import pprint
 from umwebpass import password
@@ -32,3 +30,4 @@ drushresponse = drush.communicate()
 
 params = drushresponse[0]
 print params
+print "wtf"
