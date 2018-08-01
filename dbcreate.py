@@ -12,8 +12,8 @@ from umwebpass import password
 
 # setup our arguments
 parser = argparse.ArgumentParser(description="Provide a database name, target and password")
-parser.add_argument('dbname', nargs='?', default=sys.stdin, help='Name of the site to build')
-parser.add_argument('-d', nargs='?', help="Destination cluster for the db - d7dev, d7prod, d7stag")
+parser.add_argument('dbname', nargs='?', default=sys.stdin, help='Name of the site to build e.g. cryptozoo_drpl')
+parser.add_argument('-d', nargs='?', help="Destination cluster for the db - e.g. d7-%.dev.www.umass.edu")
 parser.add_argument('-p', nargs='?', help="Password")
 
 args = parser.parse_args()
