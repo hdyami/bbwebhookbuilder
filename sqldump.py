@@ -30,4 +30,3 @@ drushresponse = drush.communicate()
 
 params = drushresponse[0]
 print params
-print "wtf"
