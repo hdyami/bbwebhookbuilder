@@ -27,7 +27,7 @@ try:
 
 	# Rsync to the dev server
 	ssh = subprocess.Popen(['ssh', 'jenk@'+build['destination']], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-	ls = subprocess.Popen(['ls', '/var/www', stdin=ssh.stdout, stderr=subprocess.PIPE)
+	ls = subprocess.Popen(['ls', '/var/www'] stdin=ssh.stdout, stderr=subprocess.PIPE)
 
 	print ls.communicate()
 
