@@ -1,0 +1,30 @@
+# {{ name }} Drupal Site
+# Provisioned TODO date
+<Directory /var/www/{{ name }}>
+  AuthType Shibboleth
+  ShibRequireSession Off
+  ShibUseHeaders On
+  require shibboleth
+
+  php_admin_value open_basedir /var/www/{{ name }}:/var/tmp:/var/www/memcache
+  RewriteEngine On
+  Options FollowSymLinks
+  AllowOverride all
+  AddType application/x-httpd-php .php
+  DirectoryIndex index.php index.html index.htm index.shtml
+  <Files ~ "\.php$">
+    Order allow,deny
+    Allow from all
+    Satisfy All
+  </Files>
+  <Files "CHANGELOG.txt">
+    Order Deny,Allow
+    Deny from all
+    Allow from 128.119.1
+  </Files>
+  <Files "install.php">
+    Order Deny,Allow
+    Deny from all
+    Allow from 128.119.1
+  </Files>
+</Directory>
