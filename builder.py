@@ -42,7 +42,7 @@ try:
 	print g.pull()
 
 	# Rsync to the dev server
-	rsync = subprocess.Popen(['rsync', '-r','-l', '-h', git_dir, 'jenk@'+build['destination']+':/var/www/'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	rsync = subprocess.Popen(['rsync', '-r','-l', '-h', '-v', '--exclude-from=/mnt/builds/exclude.txt', git_dir, 'jenk@'+build['destination']+':/var/www/'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 	print rsync.communicate()
 
