@@ -10,7 +10,7 @@ from umwebpass import password
 
 # setup our arguments
 parser = argparse.ArgumentParser(description="Provide a database name, host and password. Creates a NAME_drpl.sql file at /var/www/NAME/")
-parser.add_argument('sitename', nargs='?', default=sys.stdin, help='Name of the site to build')
+parser.add_argument('sitename', nargs='?', default=sys.stdin, help='Name of the site db to dump')
 parser.add_argument('-d', nargs='?', help="Source of the dump")
 
 args = parser.parse_args()
@@ -24,6 +24,8 @@ elif HOST == 'd7-1.stag.www.umass.edu':
 	SUFFIX = '-staging'
 elif HOST == 'd7-1.prod.www.umass.edu':
 	SUFFIX = '-prod'
+
+#pprint(args)
 
 drush = subprocess.Popen(["ssh", "jenk@"+HOST, "drush", "@"+NAME+SUFFIX, "sql-dump > /var/www/"+NAME+"/"+NAME+"-drpl.sql"], shell=False, stdout=subprocess.PIPE)
 drushresponse = drush.communicate()

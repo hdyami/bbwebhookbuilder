@@ -14,7 +14,7 @@ from jinja2 import Environment, FileSystemLoader
 TEMP_DIR = '/home/jenk/scripts/templates'
 CONF_DIR = '/var/tmp/'
 
-# setup our arguments
+# # setup our arguments
 parser = argparse.ArgumentParser(description="Invoke with a sitename")
 parser.add_argument('sitename', nargs='?', default=sys.stdin, help='Name of the sites configuration to build')
 parser.add_argument('-d', nargs='?', default=sys.stdin, help='Destination for the configuration')
@@ -29,13 +29,14 @@ template = env.get_template('web_config.j2')
 
 output = template.render(name=args.sitename)
 
-# write file to disk
 with open(CONF_DIR+args.sitename+'.conf', 'w') as filehandle:
     filehandle.write(output)
 
 # Rsync to the dev server
 rsync = subprocess.Popen(['rsync', '-rv','-l', '-h', CONF_DIR+args.sitename+'.conf', 'jenk@'+args.d+':/etc/httpd/conf.d/sites-available'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-print rsync.communicate()
+#ssh = subprocess.Popen(['ssh', 'jenk@'+args.d], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+#chown = subprocess.Popen(['sudo', 'chown', 'root:apache', '/etc/httpd/conf.d/sites-avilable/'+args.sitename+'.conf'], stdin=ssh.stdout, stdout=subprocess.PIPE)
 
-os.remove(CONF_DIR+args.sitename+'.conf')
+print rsync.communicate()
+#print ssh.communicate()
