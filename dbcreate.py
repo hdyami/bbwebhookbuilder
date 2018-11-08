@@ -33,6 +33,18 @@ elif args.d == 'd7-%.prod.www.umass.edu':
 	HOST = 'd7-%.prod.www.umass.edu'
 	CONFHOST = 'umwebdb.umass.edu'
 	PORT = '3308'
+elif args.d == 'd8-%.dev.www.umass.edu':
+	HOST = 'd8-%.dev.www.umass.edu'
+	CONFHOST = 'dev.umwebdb.umass.edu'
+	PORT = '3307'
+elif args.d == 'd8-%.stag.www.umass.edu':
+	HOST = 'd8-%.stag.www.umass.edu'
+	CONFHOST = 'stag.umwebdb.umass.edu'
+	PORT = '3307'
+elif args.d == 'd8-%.prod.www.umass.edu':
+	HOST = 'd8-%.prod.www.umass.edu'
+	CONFHOST = 'umwebdb.umass.edu'
+	PORT = '3308'
 
 config = {
 	'user': 'qsdbadmin',
