@@ -20,6 +20,7 @@ args = parser.parse_args()
 if type(args.sitename) is file:
 	# Ingest Bitbucket webhook json payload
 	for line in args.sitename:
+		pprint(line)
 		bbdata = json.loads(line)
 
 		build = {}
