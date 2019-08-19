@@ -40,21 +40,25 @@ def create_repo(token):
     data = '{"scm": "git", "project": {"key": "QS"}, "is_private": "true", "fork_policy": "no_public_forks" }'
 
     # create our repo
-    r = requests.post(url+'repositories/nsssystems/' + args.repo_name, headers=headers, data=data)
+    try:
+        r = requests.post(url+'repositories/nsssystems/' + args.repo_name, headers=headers, data=data)
+    except requests.ConnectionError:
+        print("failed to connect")
+    else:
+        if r.status_code == 200:
+            pprint(r.text)
+            
+            print 0
+            sys.exit(0)
+        else:
+            error_msg = json.loads(r.text)
+            print error_msg['error']['message']
+
+            print 1
+
     return r
 
 
 if __name__ == '__main__':
     token = get_token()
     r = create_repo(token)
-    if r.status_code == '200':
-        pprint(r.text)
-        
-        print 0
-        sys.exit(0)
-    else:
-        error_msg = json.loads(r.text)
-        print error_msg['error']['message']
-        
-        print 1
-
