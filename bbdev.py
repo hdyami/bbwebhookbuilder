@@ -1,6 +1,6 @@
 #! /usr/bin/python3
 # import os
-# import sys
+import sys
 import argparse
 import requests
 import json
@@ -13,6 +13,8 @@ from pprint import pprint
 parser = argparse.ArgumentParser(description="creates a repository")
 parser.add_argument('repo_name', nargs='?', default=sys.stdin, help='repository name')
 # parser.add_argument('-p', nargs='?', help="a parameter")
+args = parser.parse_args()
+
 
 client_id = 'SM3uvZPabGrthhTyNH'
 client_secret = 'NXBtTfEWWdFm5BFJ5ju2Q6pUf6WNH7A9'
@@ -38,13 +40,21 @@ def create_repo(token):
     data = '{"scm": "git", "project": {"key": "QS"}, "is_private": "true", "fork_policy": "no_public_forks" }'
 
     # create our repo
-    r = requests.post(url+'repositories/nsssystems/' + sitename, headers=headers, data=data)
+    r = requests.post(url+'repositories/nsssystems/' + args.repo_name, headers=headers, data=data)
     return r
 
 
 if __name__ == '__main__':
     token = get_token()
     r = create_repo(token)
-    pprint(r.text)
-    pprint(r.status_code)
+    if r.status_code == '200':
+        pprint(r.text)
+        
+        print 0
+        sys.exit(0)
+    else:
+        error_msg = json.loads(r.text)
+        print error_msg['error']['message']
+        
+        print 1
 
