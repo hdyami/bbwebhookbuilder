@@ -8,7 +8,10 @@ from mysql.connector import errorcode
 import json
 from pprint import pprint
 from umwebpass import password
+# from passwordgen import randomPassword
 
+# todo - optionally create password with strong password, as opposed to entering a password to use with a flag
+#print randomPassword(16)
 
 # setup our arguments
 parser = argparse.ArgumentParser(description="Provide a database name, target and password")
@@ -21,27 +24,27 @@ args = parser.parse_args()
 NAME = args.dbname
 PASS = args.p
 
-if args.d == 'd7-%.dev.www.umass.edu':
+if args.d == 'd7dev':
 	HOST = 'd7-%.dev.www.umass.edu'
 	CONFHOST = 'dev.umwebdb.umass.edu'
 	PORT = '3307'
-elif args.d == 'd7-%.stag.www.umass.edu':
+elif args.d == 'd7stag':
 	HOST = 'd7-%.stag.www.umass.edu'
 	CONFHOST = 'stag.umwebdb.umass.edu'
 	PORT = '3307'
-elif args.d == 'd7-%.prod.www.umass.edu':
+elif args.d == 'd7prod':
 	HOST = 'd7-%.prod.www.umass.edu'
 	CONFHOST = 'umwebdb.umass.edu'
 	PORT = '3308'
-elif args.d == 'd8-%.dev.www.umass.edu':
+elif args.d == 'd8dev':
 	HOST = 'd8-%.dev.www.umass.edu'
 	CONFHOST = 'dev.umwebdb.umass.edu'
 	PORT = '3307'
-elif args.d == 'd8-%.stag.www.umass.edu':
+elif args.d == 'd8stag':
 	HOST = 'd8-%.stag.www.umass.edu'
 	CONFHOST = 'stag.umwebdb.umass.edu'
 	PORT = '3307'
-elif args.d == 'd8-%.prod.www.umass.edu':
+elif args.d == 'd8prod':
 	HOST = 'd8-%.prod.www.umass.edu'
 	CONFHOST = 'umwebdb.umass.edu'
 	PORT = '3308'

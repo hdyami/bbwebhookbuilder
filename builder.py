@@ -20,13 +20,13 @@ args = parser.parse_args()
 if type(args.sitename) is file:
 	# Ingest Bitbucket webhook json payload
 	for line in args.sitename:
-		pprint(line)
+		# pprint(line)
 		bbdata = json.loads(line)
-
+		pprint(bbdata)
 		build = {}
 		build['name'] = bbdata['repository']['name']
 		build['destination'] = 'd7-1.dev.www.umass.edu'
-		build['f'] = 'y'
+		build['f'] = 'n'
 else: # If arguments were given by a human/external invocation
 	build = {}
 	build['name'] = args.sitename
@@ -34,7 +34,7 @@ else: # If arguments were given by a human/external invocation
 	build['f'] = args.f
 
 # Debug
-pprint(build, depth=3)
+# pprint(build, depth=3)
 
 # Local git directory
 try:
