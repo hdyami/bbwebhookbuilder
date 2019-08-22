@@ -12,7 +12,10 @@ from pprint import pprint
 # setup our arguments
 parser = argparse.ArgumentParser(description="creates a repository")
 parser.add_argument('repo_name', nargs='?', default=sys.stdin, help='repository name')
-# parser.add_argument('-p', nargs='?', help="a parameter")
+parser.add_argument('--delete', nargs='?', help="delete")
+parser.add_argument('--create', nargs='?', help="delete")
+parser.add_argument('--info', nargs='?', help="get info")
+
 args = parser.parse_args()
 
 
@@ -46,7 +49,7 @@ def create_repo(token):
         print("failed to connect")
     else:
         if r.status_code == 200:
-            pprint(r.text)
+            return r.text
             
             print 0
             sys.exit(0)
@@ -58,7 +61,35 @@ def create_repo(token):
 
     return r
 
+def get_repo_info(token):
+    try:
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+token['access_token']
+        }
+
+        r = requests.get(url+'repositories/nsssystems/' + args.repo_name, headers=headers)
+
+        return r.text
+
+    except requests.ConnectionError:
+        print("failed to connect")
+
+def pretty_json(j):
+    parsed = json.loads(j)
+
+    return json.dumps(parsed, indent=4, sort_keys=True)
 
 if __name__ == '__main__':
-    token = get_token()
-    r = create_repo(token)
+    if args.info:
+        token = get_token()
+        r = get_repo_info(token)
+        print(pretty_json(r))
+    elif args.create:
+        token = get_token()
+        r = create_repo(token)
+        print(pretty_json(r))
+
+
+    # token = get_token()
+    # r = create_repo(token)
