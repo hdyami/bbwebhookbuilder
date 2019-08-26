@@ -50,7 +50,7 @@ def create_repo(token):
     else:
         if r.status_code == 200:
             return r.text
-            
+
             print 0
             sys.exit(0)
         else:
@@ -70,7 +70,21 @@ def get_repo_info(token):
 
         r = requests.get(url+'repositories/nsssystems/' + args.repo_name, headers=headers)
 
-        return r.text
+        return r.status_code
+
+    except requests.ConnectionError:
+        print("failed to connect")
+
+def delete_repo(token):
+    try:
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+token['access_token']
+        }
+
+        r = requests.delete(url+'repositories/nsssystems/' + args.repo_name, headers=headers)
+
+        return r.status_code
 
     except requests.ConnectionError:
         print("failed to connect")
@@ -89,7 +103,6 @@ if __name__ == '__main__':
         token = get_token()
         r = create_repo(token)
         print(pretty_json(r))
-
-
-    # token = get_token()
-    # r = create_repo(token)
+    elif args.delete:
+        token = get_token()
+        r = delete_repo(token)
