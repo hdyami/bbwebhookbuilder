@@ -13,8 +13,10 @@ from pprint import pprint
 parser = argparse.ArgumentParser(description="creates a repository")
 parser.add_argument('repo_name', nargs='?', default=sys.stdin, help='repository name')
 parser.add_argument('--delete', nargs='?', help="delete")
-parser.add_argument('--create', nargs='?', help="delete")
+parser.add_argument('--create', nargs='?', help="create")
 parser.add_argument('--info', nargs='?', help="get info")
+parser.add_argument('--rename', nargs='?', help="rename")
+
 
 args = parser.parse_args()
 
@@ -49,7 +51,7 @@ def create_repo(token):
         print("failed to connect")
     else:
         if r.status_code == 200:
-            return r.text
+            return pretty_json(r.text)
 
             print 0
             sys.exit(0)
@@ -70,10 +72,22 @@ def get_repo_info(token):
 
         r = requests.get(url+'repositories/nsssystems/' + args.repo_name, headers=headers)
 
-        return r.status_code
-
     except requests.ConnectionError:
         print("failed to connect")
+    else:
+        if r.status_code == 200:
+            return pretty_json(r.text)
+
+            print 0
+            sys.exit(0)
+        else:
+            error_msg = json.loads(r.text)
+            print error_msg['error']['message']
+
+            print 1
+
+    return r
+
 
 def delete_repo(token):
     try:
@@ -84,10 +98,49 @@ def delete_repo(token):
 
         r = requests.delete(url+'repositories/nsssystems/' + args.repo_name, headers=headers)
 
-        return r.status_code
-
     except requests.ConnectionError:
         print("failed to connect")
+    else:
+        if r.status_code == 204:
+            return "Succes deleting"
+
+            print 0
+            sys.exit(0)
+        else:
+            error_msg = json.loads(r.text)
+            print error_msg['error']['message']
+
+            print 1
+            sys.exit(0)
+
+    return r
+
+def rename_repo(token):
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer '+token['access_token']
+    }
+
+    data = '{"name":'+ args.reponame +'}'
+
+    # create our repo
+    try:
+        r = requests.put(url+'repositories/nsssystems/' + args.repo_name, headers=headers, data=data)
+    except requests.ConnectionError:
+        print("failed to connect")
+    else:
+        if r.status_code == 200:
+            return r.text
+
+            print 0
+            sys.exit(0)
+        else:
+            error_msg = json.loads(r.text)
+            print error_msg['error']['message']
+
+            print 1
+
+    return r
 
 def pretty_json(j):
     parsed = json.loads(j)
@@ -98,11 +151,18 @@ if __name__ == '__main__':
     if args.info:
         token = get_token()
         r = get_repo_info(token)
-        print(pretty_json(r))
+        print r
     elif args.create:
         token = get_token()
         r = create_repo(token)
-        print(pretty_json(r))
+        print r
     elif args.delete:
         token = get_token()
         r = delete_repo(token)
+        print r
+    elif args.rename:
+        token = get_token()
+        r = rename_repo(token)
+        print(pretty_json(r))
+    else:
+        print("Invalid option")
