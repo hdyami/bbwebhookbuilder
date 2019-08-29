@@ -88,7 +88,6 @@ def get_repo_info(token):
 
     return r
 
-
 def delete_repo(token):
     try:
         headers = {
@@ -121,16 +120,17 @@ def rename_repo(token):
         'Authorization': 'Bearer '+token['access_token']
     }
 
-    data = '{"name":'+ args.reponame +'}'
-
+    data = '{"name": "'+ args.rename +'"}'
+    pprint(data)
     # create our repo
     try:
         r = requests.put(url+'repositories/nsssystems/' + args.repo_name, headers=headers, data=data)
     except requests.ConnectionError:
         print("failed to connect")
     else:
+        pprint(r)
         if r.status_code == 200:
-            return r.text
+            return pretty_json(r.text)
 
             print 0
             sys.exit(0)
@@ -139,7 +139,7 @@ def rename_repo(token):
             print error_msg['error']['message']
 
             print 1
-
+            sys.exit(0)
     return r
 
 def pretty_json(j):
@@ -163,6 +163,6 @@ if __name__ == '__main__':
     elif args.rename:
         token = get_token()
         r = rename_repo(token)
-        print(pretty_json(r))
+        print r
     else:
         print("Invalid option")
