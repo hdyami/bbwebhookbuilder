@@ -17,7 +17,6 @@ parser.add_argument('--create', nargs='?', help="create")
 parser.add_argument('--info', nargs='?', help="get info")
 parser.add_argument('--rename', nargs='?', help="rename")
 
-
 args = parser.parse_args()
 
 
@@ -36,7 +35,7 @@ def get_token():
 
     return token
 
-def create_repo(token):
+def create_repo(token, r_name):
     headers = {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer '+token['access_token']
@@ -46,7 +45,7 @@ def create_repo(token):
 
     # create our repo
     try:
-        r = requests.post(url+'repositories/nsssystems/' + args.repo_name, headers=headers, data=data)
+        r = requests.post(url+'repositories/nsssystems/' + r_name, headers=headers, data=data)
     except requests.ConnectionError:
         print("failed to connect")
     else:
@@ -154,7 +153,7 @@ if __name__ == '__main__':
         print r
     elif args.create:
         token = get_token()
-        r = create_repo(token)
+        r = create_repo(token, args.repo_name)
         print r
     elif args.delete:
         token = get_token()
