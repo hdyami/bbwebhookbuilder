@@ -1,4 +1,4 @@
-#! /usr/bin/python3
+#! /usr/bin/python
 # import os
 import sys
 import argparse
@@ -11,11 +11,15 @@ from requests_oauthlib import OAuth2Session
 
 from pprint import pprint
 
-import repo
+# import repo
 
 # setup our arguments
 parser = argparse.ArgumentParser(description="creates a repository")
-parser.add_argument('site_name', nargs='?', default=sys.stdin, help='site name')
+parser.add_argument('--site_name', nargs='?', default=sys.stdin, help='site name')
+parser.add_argument('--structure', nargs='?', default=sys.stdin, help='structure')
+parser.add_argument('--sponsor', nargs='?', default=sys.stdin, help='sponsor')
+parser.add_argument('--developer', nargs='?', default=sys.stdin, help='developer')
+
 # parser.add_argument('--version', nargs='?', help="which version of drupal do we desire?")
 
 args = parser.parse_args()
@@ -81,9 +85,9 @@ def copy_standard():
         print "Error > ",sys.exc_info()[0]
 
 if __name__ == '__main__':
-    token = repo.get_token()
-    repo.create_repo(token, args.site_name)
-    clone_standard()
-    clone_newrepo()
-    copy_standard()
-    
+    pprint(args)
+    # token = repo.get_token()
+    # repo.create_repo(token, args.site_name)
+    # clone_standard()
+    # clone_newrepo()
+    # copy_standard()
