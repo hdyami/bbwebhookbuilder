@@ -6,7 +6,7 @@ import git
 import json
 
 # setup our arguments
-parser = argparse.ArgumentParser(description="creates a repository")
+parser = argparse.ArgumentParser(description="clones a repository")
 parser.add_argument('sitename', nargs='?', default=sys.stdin, help='site name')
 parser.add_argument('--host', nargs='?', default=sys.stdin, help='target host')
 
