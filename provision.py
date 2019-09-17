@@ -65,7 +65,7 @@ def clone_newrepo():
         print "Error > ",sys.exc_info()[0]
 
 def copy_standard():
-    # https://stackoverflow.com/a/28413657
+    # https://stackoverflow.com/a/28413657vo, 
     # https://gist.github.com/s4553711/9488399
     print( "Renaming qs-site-d8-standard-framework to %s" % (args.site_name))
     try:

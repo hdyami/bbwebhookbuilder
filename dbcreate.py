@@ -72,6 +72,7 @@ def enable_database_access(cursor):
 	query = ("GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, LOCK TABLES, CREATE TEMPORARY TABLES ON {}.* TO %s@%s IDENTIFIED BY %s WITH MAX_USER_CONNECTIONS 30".format('`'+ NAME +'`'))
 	try:
 		cursor.execute(query, (NAME, HOST, PASS))
+		cursor.execute(query, (NAME, 'wc-1.www.umass.edu', PASS))
 		print("Success granting permissions for {}".format(NAME))
 	except mysql.connector.Error as err:
 		print("Failed querying: {}".format(err))

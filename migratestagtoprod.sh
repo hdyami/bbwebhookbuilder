@@ -24,7 +24,6 @@ sed -i 's/3307/3308/g' $PRODDIR/sites/default/settings.php
 ssh d7prod "cd /var/www/$d; drush sqlc < ${d}_drpl.sql; exit"
 
 
-# TODO make the above action work without ssh, make the bottom stuff work period
 # ssh d7prod "sudo -i; cp -a /etc/httpd/conf.d/sites-available/uww.conf /etc/httpd/conf.d/sites-available/${d}.conf;exit"
 # ssh d7prod "sudo -i; sed -i 's/uww/${d}/g' /etc/httpd/conf.d/sites-available/${d}.conf;exit"
 # ssh d7prod "sudo -i; sed -i 's/uww/${d}/g' /etc/httpd/conf.d/sites-available/${d}.conf; ensite ${d}; exit"

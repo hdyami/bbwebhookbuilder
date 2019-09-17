@@ -1,7 +1,7 @@
 #!/bin/bash
 ## -d is the host target -s is the sitename
 ## given $d and $s, prepare the FS on the target host
-while getopts ":d:s:" o; do
+while getopts ":s:" o; do
     case "${o}" in
         s)
             s=${OPTARG}
