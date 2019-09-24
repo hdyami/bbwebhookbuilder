@@ -8,35 +8,36 @@ import git
 import json
 from oauthlib.oauth2 import BackendApplicationClient
 from requests_oauthlib import OAuth2Session
-
 from pprint import pprint
+from repo import get_token
+from repo import create_repo
 
-# import repo
 
 # setup our arguments
 parser = argparse.ArgumentParser(description="creates a repository")
-parser.add_argument('--site_name', nargs='?', default=sys.stdin, help='site name')
+parser.add_argument('sitename', nargs='?', default=sys.stdin, help='site name')
 parser.add_argument('--structure', nargs='?', default=sys.stdin, help='structure')
 parser.add_argument('--sponsor', nargs='?', default=sys.stdin, help='sponsor')
 parser.add_argument('--developer', nargs='?', default=sys.stdin, help='developer')
 
-# parser.add_argument('--version', nargs='?', help="which version of drupal do we desire?")
+parser.add_argument('--version', nargs='?', help="which version of drupal do we desire?")
+
+d8source = 'git@bitbucket.org:nsssystems/qs-site-d8-standard-framework.git'
+devdir = '/mnt/qs_ssd/www/dev/'
 
 args = parser.parse_args()
 
-def clone_standard():
-    # https://stackoverflow.com/a/28413657
-    # https://gist.github.com/s4553711/9488399
-    print( "Cloning git@bitbucket.org:nsssystems/qs-site-d8-standard-framework.git to /var/www")
+def inlet(message, payload):
+    print( message)
     try:
-        s = subprocess.Popen(['ssh', 'd8-1.dev.www.umass.edu', 'cd /var/www; git clone git@bitbucket.org:nsssystems/qs-site-d8-standard-framework.git' ], shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        s = subprocess.Popen(payload, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         output, error = s.communicate()
         if output:
-            print s.returncode
-            print output
+            print(s.returncode)
+            print(output)
         if error:
-            print s.returncode
-            print error.strip()
+            print(s.returncode)
+            print(error.strip())
     except OSError as e:
         print "OSError > ",e.errno
         print "OSError > ",e.strerror
@@ -44,50 +45,12 @@ def clone_standard():
     except:
         print "Error > ",sys.exc_info()[0]
 
-def clone_newrepo():
-    # https://stackoverflow.com/a/28413657
-    # https://gist.github.com/s4553711/9488399
-    print( "Cloning git@bitbucket.org:nsssystems/%s to /var/www" % (args.site_name))
-    try:
-        s = subprocess.Popen(['ssh', 'd8-1.dev.www.umass.edu', 'cd /var/www; git clone git@bitbucket.org:nsssystems/'+ args.site_name +'.git' ], shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        output, error = s.communicate()
-        if output:
-            print s.returncode
-            print output
-        if error:
-            print s.returncode
-            print error.strip()
-    except OSError as e:
-        print "OSError > ",e.errno
-        print "OSError > ",e.strerror
-        print "OSError > ",e.filename
-    except:
-        print "Error > ",sys.exc_info()[0]
-
-def copy_standard():
-    # https://stackoverflow.com/a/28413657vo, 
-    # https://gist.github.com/s4553711/9488399
-    print( "Renaming qs-site-d8-standard-framework to %s" % (args.site_name))
-    try:
-        s = subprocess.Popen(['ssh', 'd8-1.dev.www.umass.edu', 'mv /var/www/qs-site-d8-standard-framework', '/var/www/%s' % args.site_name ], shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        output, error = s.communicate()
-        if output:
-            print s.returncode
-            print output
-        if error:
-            print s.returncode
-            print error.strip()
-    except OSError as e:
-        print "OSError > ",e.errno
-        print "OSError > ",e.strerror
-        print "OSError > ",e.filename
-    except:
-        print "Error > ",sys.exc_info()[0]
-
+ reset
 if __name__ == '__main__':
-    pprint(args)
-    # token = repo.get_token()
-    # repo.create_repo(token, args.site_name)
-    # clone_standard()
-    # clone_newrepo()
-    # copy_standard()
+    token = get_token()
+    create_repo(token, args.sitename)
+
+    inlet("Cloning git@bitbucket.org:nsssystems/qs-site-d8-standard-framework.git to /var/www", ['git', 'clone', d8source, devdir+args.sitename])
+    inlet("Blank the slate", ['rm', '-rf', devdir+args.sitename+'/.git'])
+    inlet("Initialize a blank repository", ['git', 'init', devdir+args.sitename])
+    inlet("Add new site to blank repo", ['git', '--work-tree='+devdir+args.sitename, "--git-dir="+devdir+args.sitename+"/.git", "add", devdir+args.sitename])
