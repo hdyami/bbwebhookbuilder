@@ -9,6 +9,7 @@ while getopts ":d:" o; do
     esac
 done
 
+DEVDIR=/mnt/qs_ssd/www/stag/$d/
 STAGDIR=/mnt/qs_ssd/www/stag/$d/
 PRODDIR=/mnt/qs_ssd/d7/prod/www/$d
 

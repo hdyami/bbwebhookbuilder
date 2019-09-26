@@ -9,17 +9,6 @@ from requests_oauthlib import OAuth2Session
 
 from pprint import pprint
 
-# setup our arguments
-parser = argparse.ArgumentParser(description="creates a repository")
-parser.add_argument('repo_name', nargs='?', default=sys.stdin, help='repository name')
-parser.add_argument('--delete', nargs='?', help="delete")
-parser.add_argument('--create', nargs='?', help="create")
-parser.add_argument('--info', nargs='?', help="get info")
-parser.add_argument('--rename', nargs='?', help="rename")
-
-args = parser.parse_args()
-
-
 client_id = 'SM3uvZPabGrthhTyNH'
 client_secret = 'NXBtTfEWWdFm5BFJ5ju2Q6pUf6WNH7A9'
 
@@ -147,6 +136,16 @@ def pretty_json(j):
     return json.dumps(parsed, indent=4, sort_keys=True)
 
 if __name__ == '__main__':
+    # setup our arguments
+    parser = argparse.ArgumentParser(description="creates a repository")
+    parser.add_argument('repo_name', nargs='?', default=sys.stdin, help='repository name')
+    parser.add_argument('--delete', nargs='?', help="delete")
+    parser.add_argument('--create', nargs='?', help="create")
+    parser.add_argument('--info', nargs='?', help="get info")
+    parser.add_argument('--rename', nargs='?', help="rename")
+
+    args = parser.parse_args()
+    
     if args.info:
         token = get_token()
         r = get_repo_info(token)
