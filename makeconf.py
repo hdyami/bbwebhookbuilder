@@ -14,29 +14,32 @@ from jinja2 import Environment, FileSystemLoader
 TEMP_DIR = '/home/jenk/scripts/templates'
 CONF_DIR = '/var/tmp/'
 
-# # setup our arguments
-parser = argparse.ArgumentParser(description="Invoke with a sitename")
-parser.add_argument('sitename', nargs='?', default=sys.stdin, help='Name of the sites configuration to build')
-parser.add_argument('-d', nargs='?', default=sys.stdin, help='Destination for the configuration')
+if __name__ == '__main__':
+	# setup our arguments
+	parser = argparse.ArgumentParser(description="Invoke with a sitename")
+	parser.add_argument('sitename', nargs='?', default=sys.stdin, help='Name of the sites configuration to build')
+	parser.add_argument('-d', nargs='?', default=sys.stdin, help='Destination for the configuration')
 
-args = parser.parse_args()
+	args = parser.parse_args()
 
-file_loader = FileSystemLoader(TEMP_DIR)
+	file_loader = FileSystemLoader(TEMP_DIR)
 
-env = Environment(loader=file_loader)
+	env = Environment(loader=file_loader)
 
-template = env.get_template('web_config.j2')
+	template = env.get_template('web_config.j2')
 
-output = template.render(name=args.sitename)
+	output = template.render(name=args.sitename)
 
-with open(CONF_DIR+args.sitename+'.conf', 'w') as filehandle:
-    filehandle.write(output)
+	with open(CONF_DIR+args.sitename+'.conf', 'w') as filehandle:
+	    filehandle.write(output)
 
-# Rsync to the dev server
-rsync = subprocess.Popen(['rsync', '-rv','-l', '-h', CONF_DIR+args.sitename+'.conf', 'jenk@'+args.d+':/etc/httpd/conf.d/sites-available'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	# os.chown(CONF_DIR+args.sitename+'.conf', 0, 1004)
 
-#ssh = subprocess.Popen(['ssh', 'jenk@'+args.d], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-#chown = subprocess.Popen(['sudo', 'chown', 'root:apache', '/etc/httpd/conf.d/sites-avilable/'+args.sitename+'.conf'], stdin=ssh.stdout, stdout=subprocess.PIPE)
+	# Rsync to the dev server
+	rsync = subprocess.Popen(['rsync', '-ogvzhP', CONF_DIR+args.sitename+'.conf', 'jenk@'+args.d+':/etc/httpd/conf.d/sites-available'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-print rsync.communicate()
-#print ssh.communicate()
+	print rsync.communicate()
+
+	chown = subprocess.Popen(['ssh d7-1.stag.www.umass.edu sudo chown root /etc/httpd/conf.d/sites-available/cryptoboo.conf'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+	print chown.communicate()
